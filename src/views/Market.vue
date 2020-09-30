@@ -1,10 +1,6 @@
 <template>
-    <v-row class="text-center">
-      <v-col cols="12">
-        <v-spacer/>
-        <h1>Test</h1>
-      </v-col>
-    </v-row>
+    <v-app>
+    </v-app>
 </template>
 
 <script>
