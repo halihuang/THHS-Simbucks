@@ -1,16 +1,16 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import * as fb from './firebase'
-import * as firebase from 'firebase/app'
 import router from './router/index'
 
 Vue.use(Vuex)
+
 
 export default new Vuex.Store({
   state: {
       nav: [],
       user: {},
-      collection: ""
+      userDoc: {}
   }, 
   mutations: {
     setNav: (state, nav) => {
@@ -19,8 +19,11 @@ export default new Vuex.Store({
     setUser: (state, user) => {
         state.user = user
     },
-    setCollection: (state, collection) => {
-        state.collection = collection
+    setUserDoc: (state, doc) => {
+      state.userDoc = doc
+    },
+    subtractSimbucks:(state, amount) => {
+      state.user.simbucks = state.user.simbucks - amount
     }
   },
   getters: {
@@ -32,36 +35,55 @@ export default new Vuex.Store({
     // }
   },
   actions: {
-      async login({dispatch}, collection){
-          const provider = new firebase.auth.GoogleAuthProvider()
-          const user = await firebase.auth().signInWithPopup(provider)
-          var data = {user: user.user, collection: collection}
-          dispatch('fetchUserData', data)
-      },
       async logout({commit}){
         await fb.auth.signOut()
         commit('setNav', [])
         commit('setUser', {})
-        commit('setCollection', "")
+        localStorage.removeItem('collection')
         router.push('/login')
     },
       async fetchUserData({commit, dispatch}, data){
-        const userData = await fb.db.collection(data.collection).doc(data.user.uid).get()
-        commit('setUser', userData)
-        commit('setCollection', data.collection)
-        dispatch("allowNav")
-        router.push('/')
-      },
-      allowNav({commit, state}){
-        var routes = [
-            { text: 'Marketplace', icon: 'mdi-storefront', route: 'market'},
-            { text: 'Purchase History', icon: 'mdi-history', route: 'history' },
-            { text: 'About', icon:'mdi-information', route: 'about'}
-        ];
-        if(state.collection == "admins"){
-            routes[1] = { text: 'Manage Funds', icon:'mdi-supervised_user_circle', route: 'admin'}
+        var doc = await fb.getUserDoc(data)
+        if(doc){
+          commit('setUser', doc.data())
         }
+        dispatch("allowNav")
+        if(router.history.current.path == "/login"){
+          router.push('/')
+        }
+      },
+      allowNav({commit}){
+        
+        var collection = localStorage.getItem('collection')
+        var routes
+        if(collection == 'voters'){
+            routes = [
+              { text: 'Marketplace', icon: 'mdi-storefront', route: 'market'},
+              { text: 'Donate', icon: 'mdi-currency-usd-circle', route: 'donate'},
+              { text: 'Purchase History', icon: 'mdi-history', route: 'history' },
+          ];
+        }
+        else if(collection == "seniors"){
+          routes= [
+            { text: 'Marketplace', icon: 'mdi-storefront', route: 'market'},
+            { text: 'Advertising', icon:'mdi-youtube-tv', route: 'advertising'},
+            { text: 'Funds', icon:'mdi-cash-refund', route: 'campaign-funds'}
+          ]
+        }
+        else{
+            routes= [
+            { text: 'Manage Participants', icon:'mdi-account-box-multiple', route: 'seniors'},
+            { text: 'Manage Voters', icon:'mdi-account-box-multiple', route: 'voters'},
+            { text: 'Admins', icon:'mdi-security', route: 'admins'}
+          ]
+        }
+        routes.push( { text: 'About', icon:'mdi-information', route: 'about'} )
         commit('setNav', routes)
+      },
+      async buyItem({commit, state}, amount){
+        var doc = await fb.getUserDoc(fb.getUserMeta())
+        commit('subtractSimbucks', amount)
+        doc.ref.set(state.user)
       }
   }
 })

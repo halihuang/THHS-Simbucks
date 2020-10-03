@@ -8,6 +8,10 @@
         background-repeat: no-repeat;
         background-position: center;
         height: 100%;
+        width:100%;
+        top:0;
+        left:0;
+        position: absolute;
        
     }
 </style>
@@ -54,11 +58,14 @@
 
 
 <script>
+import * as firebase from 'firebase/app'
+
 export default {
     methods: {
         login: function(collection){
-            this.$store.dispatch('login', collection)
-        }
+        const provider = new firebase.auth.GoogleAuthProvider()
+          localStorage.setItem('collection', collection)
+          firebase.auth().signInWithPopup(provider)        }
     }
 }
 </script>

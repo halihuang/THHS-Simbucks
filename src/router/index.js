@@ -9,7 +9,7 @@ const routes = [
   {
     path: '/',
     name: 'Market',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Market.vue'),
+    component: () => import(/* webpackChunkName: "market" */ '../views/Market.vue'),
     meta: {
       requiresAuth: true
     }
@@ -33,15 +33,47 @@ const routes = [
   {
     path: '/history',
     name: 'History',
-    component: () => import(/* webpackChunkName: "about" */ '../views/History.vue'),
+    component: () => import(/* webpackChunkName: "history" */ '../views/voters/History.vue'),
     meta: {
       requiresAuth: true
     }
   },
   {
-    path: '/admin',
+    path: '/seniors',
+    name: 'Seniors',
+    component: () => import(/* webpackChunkName: "admin" */ '../views/admin/seniors.vue'),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/voters',
+    name: 'Voters',
+    component: () => import(/* webpackChunkName: "admin" */ '../views/admin/voters.vue'),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/admins',
     name: 'Admin',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Admin.vue'),
+    component: () => import(/* webpackChunkName: "admin" */ '../views/admin/Admin.vue'),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/advertising',
+    name: 'Advertising',
+    component: () => import(/* webpackChunkName: "admin" */ '../views/seniors/Advertising.vue'),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/campaign-funds',
+    name: 'Funds',
+    component: () => import(/* webpackChunkName: "admin" */ '../views/seniors/Funds.vue'),
     meta: {
       requiresAuth: true
     }

@@ -2,15 +2,12 @@
     <v-container v-if="items.length > 0">
     <v-navigation-drawer
     v-model="drawer"
-    fixed
     clipped
     app
     >
     <v-container>
       <v-list
-            nav
-            dense
-            
+            nav   
         >
               <v-list-item v-if="$vuetify.breakpoint.mobile">
                   <v-list-item-title>THHS Simbucks</v-list-item-title>
@@ -21,7 +18,7 @@
                   v-model="group"
                   active-class="primary--text text--accent-4"
               >
-                  <v-list-item v-for="(item,i) in items" v-bind:key="i">
+                  <v-list-item v-for="(item,i) in items" v-bind:key="i" v-bind:to="item.route">
                       <v-list-item-icon>
                           <v-icon v-text="item.icon"></v-icon>
                       </v-list-item-icon>
@@ -52,16 +49,16 @@
       <v-toolbar-title>THHS Simbucks</v-toolbar-title>
 
       <v-spacer></v-spacer>
-
-      <v-btn
-      color="primary">
-        My Balance: $79.29
+      <v-btn class="primary" v-if="balance">
+        Balance: ${{balance}}
       </v-btn>
     </v-app-bar>
     </v-container>
 </template>
 
 <script>
+  // import {voters, seniors} from '../firebase.js'
+
   export default {
     name: 'Nav',
   
@@ -74,6 +71,13 @@
     computed: {
       items() {
         return this.$store.state.nav
+      },
+      balance() {
+        if( this.$store.state.user){
+          return this.$store.state.user.simbucks
+        }
+        return ""
+        
       }
     },
     methods: {

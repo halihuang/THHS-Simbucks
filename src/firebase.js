@@ -23,7 +23,42 @@ const voters = db.collection("voters")
 const admins = db.collection("admins")
 const seniors = db.collection("seniors")
 const market = db.collection("market")
+const ads = db.collection("advertising")
 
+async function listAll(collection){
+    var data = await collection.get()
+    var list = []
+    for(let doc of data.docs){
+        list.push(doc.data())
+    }
+    return list
+}
+
+async function getUserDoc(data){
+    var userDoc = undefined
+    if(data.collection == 'seniors'){
+        console.log(data.user.email)
+        const collection = await seniors.get()
+        for(let doc of collection.docs){
+          for(let email of doc.data().emails){
+            if(email == data.user.email){
+                userDoc = doc
+                break
+            }
+          }
+        }
+      }
+      else if(data.collection == 'voters'){
+        userDoc = await voters.doc(data.user.uid).get()
+      }
+      return userDoc
+}
+
+
+function getUserMeta(){
+    var collection = localStorage.getItem('collection')
+    return {user:auth.currentUser, collection: collection}
+}
 
 export {
     db,
@@ -31,5 +66,9 @@ export {
     voters,
     admins,
     seniors,
-    market
+    market,
+    ads,
+    listAll,
+    getUserDoc,
+    getUserMeta
 }
