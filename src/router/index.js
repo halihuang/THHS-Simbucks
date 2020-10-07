@@ -39,6 +39,14 @@ const routes = [
     }
   },
   {
+    path: '/Donate',
+    name: 'Donate',
+    component: () => import(/* webpackChunkName: "history" */ '../views/voters/Donate.vue'),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
     path: '/seniors',
     name: 'Seniors',
     component: () => import(/* webpackChunkName: "admin" */ '../views/admin/seniors.vue'),
@@ -74,6 +82,14 @@ const routes = [
     path: '/campaign-funds',
     name: 'Funds',
     component: () => import(/* webpackChunkName: "admin" */ '../views/seniors/Funds.vue'),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/fundraise',
+    name: 'Fundraise',
+    component: () => import(/* webpackChunkName: "admin" */ '../views/seniors/Fundraise.vue'),
     meta: {
       requiresAuth: true
     }

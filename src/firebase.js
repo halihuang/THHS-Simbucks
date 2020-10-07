@@ -24,6 +24,7 @@ const admins = db.collection("admins")
 const seniors = db.collection("seniors")
 const market = db.collection("market")
 const ads = db.collection("advertising")
+const transactions = db.collection("transactions")
 
 async function listAll(collection){
     var data = await collection.get()
@@ -60,6 +61,11 @@ function getUserMeta(){
     return {user:auth.currentUser, collection: collection}
 }
 
+async function getDocument(collection, prop, value){
+  var data = await collection.where(prop, '==', value).get()
+  return data.docs[0]
+}
+
 export {
     db,
     auth,
@@ -68,7 +74,9 @@ export {
     seniors,
     market,
     ads,
+    transactions,
     listAll,
     getUserDoc,
-    getUserMeta
+    getUserMeta,
+    getDocument
 }

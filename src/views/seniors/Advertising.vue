@@ -110,16 +110,16 @@
             <thead>
                 <tr>
                 <th class="text-left">
+                    Date
+                </th>
+                <th class="text-left">
                     Ad Type
                 </th>
                 <th class="text-left">
                     Time
                 </th>
                 <th class="text-left">
-                    Simbucks Spent
-                </th>
-                <th class="text-left">
-                    Date
+                    Simbucks
                 </th>
                 </tr>
             </thead>
@@ -205,7 +205,7 @@ export default {
             if(this.newAd.simbucks <= this.$store.state.user.simbucks){
                 this.newAd.by = this.$store.state.user.name
                 ads.add(this.newAd).then(() => {
-                    self.$store.dispatch('buyItem', self.newAd.simbucks)
+                    self.$store.dispatch('spendSimbucks', self.newAd.simbucks)
                     self.loadAds()
                     self.dialog= false
                 })

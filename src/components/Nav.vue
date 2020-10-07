@@ -26,14 +26,13 @@
                       </v-list-item-title>
                   </v-list-item>
               </v-list-item-group>
-              <v-list-item-group>
-                <v-list-item>
+              <v-list-item-group class="mt-4">
+                  <b>Signed in as:</b> {{signInState}}
                   <v-btn
                   class="mt-5 text-center error"
                   @click="signout()">
                     Sign out
                   </v-btn>
-                </v-list-item>
               </v-list-item-group>
           </v-list>
       </v-container>
@@ -76,8 +75,20 @@
         if( this.$store.state.user){
           return this.$store.state.user.simbucks
         }
-        return ""
-        
+        return "" 
+      },
+      signInState(){
+        if(this.$store.state.user.name){
+          return " " + this.$store.state.user.name
+        }
+        else if(this.$store.state.user.email){
+          var email = " " + this.$store.state.user.email
+          email = email.split("@")[0]
+          return email
+        }
+        else{
+          return " Admin"
+        }
       }
     },
     methods: {

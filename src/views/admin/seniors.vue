@@ -45,15 +45,20 @@
                         label="Type"
                         required
                         ></v-select>
-
-                        <v-text-field v-for="(email,i) in candidate.emails"
-                        filled
-                        v-bind:key="i"
-                        v-model="candidate.emails[i]"
-                        :rules="[v => !!v || 'Email is required', v => /.+@.+/.test(v) || 'E-mail must be valid']"
-                        label="Email Allowed Access"
-                        required
-                        ></v-text-field>
+                        <v-flex v-for="(email,i) in candidate.emails" v-bind:key="i">
+                            <v-row>
+                                <v-text-field
+                                filled
+                                v-model="candidate.emails[i]"
+                                label="Email Allowed Access"
+                                ></v-text-field>
+                                <v-icon v-if="i != 0"
+                                @click="deleteEmail(i)"
+                                >
+                                mdi-delete
+                                </v-icon>
+                            </v-row>
+                        </v-flex>
                         <v-btn @click="candidate.emails.push('')">
                             Add Email
                         </v-btn>
@@ -81,6 +86,7 @@
             </v-card>
             </v-dialog>
         </div>
+
         <v-data-table
         :headers="headers"
         :items="candidates"
@@ -92,8 +98,7 @@
             flat
         >
             <v-toolbar-title>Candidates and Interest Groups</v-toolbar-title>
-         
-
+            
             <v-dialog v-model="dialogDelete" max-width="500px">
             <v-card>
                 <v-card-title class="headline">Are you sure you want to delete this item?</v-card-title>
@@ -106,6 +111,14 @@
             </v-card>
             </v-dialog>
         </v-toolbar>
+        <v-text-field class="mb-6"
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="Search"
+            single-line
+            hide-details
+        ></v-text-field>
+
         </template>
         <template v-slot:item.actions="{ item }">
         <v-icon
@@ -180,6 +193,9 @@ export default {
             this.candidate = Object.assign({},item)
             this.dialogTitle = "Edit"
             this.dialog = true
+        },
+        deleteEmail(i){
+            this.candidate.emails.splice(i, 1)
         }
     },
     mounted(){

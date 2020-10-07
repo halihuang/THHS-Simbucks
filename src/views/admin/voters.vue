@@ -1,5 +1,6 @@
 <template>
     <v-container>
+         
         <v-data-table
         :headers="headers"
         :items="voters"
@@ -11,6 +12,13 @@
             >
                 <v-toolbar-title>Voters</v-toolbar-title>
             </v-toolbar>
+            <v-text-field class="mb-6"
+                v-model="search"
+                append-icon="mdi-magnify"
+                label="Search"
+                single-line
+                hide-details
+            ></v-text-field>
             </template>
             <template v-slot:item.actions="{ item }">
             <v-icon
@@ -21,56 +29,68 @@
                 mdi-pencil
             </v-icon>
             </template>
-            <v-dialog
-            v-model="dialog"
-            width="500"
-            >
-                <v-card>
-                    <v-card-title>Edit Voter</v-card-title>
-                    <v-card-text>
-                        <v-form
-                        v-model="valid">
-                            <v-text-field
-                            v-model="edited"
-                            label="Set Money"
-                            :rules="[v => !!v || 'A value is required', v=> !isNaN(v) || 'Must be a number']"
-                            required>
-                            </v-text-field>
-                        </v-form>
-                    </v-card-text>
-                    <v-card-actions></v-card-actions>
-                </v-card>
-            </v-dialog>
         </v-data-table>
+        <v-dialog
+        v-model="dialog"
+        width="500"
+        >
+            <v-card>
+                <v-card-title>Edit Voter</v-card-title>
+                <v-card-text>
+                    <v-form
+                    v-model="valid">
+                        <v-text-field
+                        v-model="edited.simbucks"
+                        label="Set Money"
+                        :rules="[v => !!v || 'A value is required', v=> !isNaN(v) || 'Must be a number']"
+                        required>
+                        </v-text-field>
+                    </v-form>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn @click="editVoterData()"
+                    :disabled="!valid"
+                    class="primary">
+                        Edit
+                    </v-btn>
+                    <v-btn @click="dialog = false"
+                    class="error">
+                        Close
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-container>
 </template>
 
 <script>
-import {voters, listAll} from '../../firebase'
+import {voters, listAll, getDocument} from '../../firebase'
 export default {
       data(){
           return {
               headers: [{text: "Email", value: "email"}, {text:"Simbucks", value:"simbucks"},  { text: "Actions", value: "actions"}],
-              dialog: true,
+              dialog: false,
               valid: false,
               voters: [],
               search: "",
-              edited: ""
+              edited: {simbucks:"", email:""}
           }
       },
       methods: {
           async loadVoters(){
               this.voters = await listAll(voters)
-              console.log(this.voters)
           },
-          editVoter(voter){
-            var self = this
-            self.dialog = true
-              voters.where('email', '==', voter.email).get().then((data) => {
-                  data.forEach((doc) => {
-                      self.edited = doc.data().simbucks
-                  })
-              })
+          async editVoter(voter){
+            this.dialog = true
+            var doc = await getDocument(voters, "email", voter.email)
+            this.edited = {simbucks:doc.data().simbucks, email: voter.email}
+          },
+          async editVoterData(){
+            var doc = await getDocument(voters, "email", this.edited.email)
+            await doc.ref.set(this.edited)
+            this.loadVoters()
+            this.dialog = false
           }
 
       },

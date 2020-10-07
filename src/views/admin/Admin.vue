@@ -26,12 +26,14 @@
                     <v-list-item-action class="pr-6">
                         <v-flex>
                             <v-row>
+                            <v-btn class="error"  @click="deleteAdmin(admin)">
                             <h4>Delete</h4>
                             <v-icon
-                                @click="deleteAdmin(admin)"
+                                
                             >
                             mdi-delete
                             </v-icon>
+                                </v-btn>
                             </v-row>
                         </v-flex>
                     </v-list-item-action>

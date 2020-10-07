@@ -49,7 +49,9 @@
                             I am an Admin
                         </a>
                     </v-col>
-                    
+                    <v-alert type="error" v-if="permission">
+                        {{permission}}
+                    </v-alert>
                 </v-card-text>
             </v-card>
         </v-container>
@@ -63,9 +65,15 @@ import * as firebase from 'firebase/app'
 export default {
     methods: {
         login: function(collection){
-        const provider = new firebase.auth.GoogleAuthProvider()
-          localStorage.setItem('collection', collection)
-          firebase.auth().signInWithPopup(provider)        }
+            const provider = new firebase.auth.GoogleAuthProvider()
+            localStorage.setItem('collection', collection)
+            firebase.auth().signInWithPopup(provider)
+        },
+    },
+    computed: {
+        permission(){
+            return this.$store.state.permission
+        }
     }
 }
 </script>
