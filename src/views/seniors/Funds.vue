@@ -4,10 +4,15 @@
             <h1>Fund History</h1>
         </div>
         <v-alert class="mx-auto mt-12 text-center"
-        v-if="history.length == 0"
+        v-if="history.length == 0 && !loaded"
         max-width="200px"
         type="info"
         >Loading</v-alert>
+        <v-alert class="mx-auto mt-12 text-center"
+        v-if="history.length == 0 && loaded"
+        max-width="200px"
+        type="error"
+        >No Transaction History Found</v-alert>
         <v-simple-table v-if="history.length > 0">
             <template v-slot:default>
             <thead>
@@ -51,6 +56,7 @@ export default {
     data(){
         return {
             history: [],
+            loaded: false
         }
     },
     methods: {
@@ -72,9 +78,11 @@ export default {
                 return 0
             })
             this.history = history
+            this.loaded = true
         }
     },
     mounted(){
+        this.loaded = false
         setTimeout(() => {this.loadHistory()}, 2000)
     }
 }

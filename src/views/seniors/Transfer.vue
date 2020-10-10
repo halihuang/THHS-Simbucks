@@ -1,7 +1,7 @@
 <template>
      <v-container>
         <h1 class="
-        text-center">Donate</h1>
+        text-center">Transfer Funds</h1>
         <v-data-table
         :headers="headers"
         :items="candidates"
@@ -17,13 +17,13 @@
 
             <v-dialog v-model="dialog" max-width="500px">
             <v-card>
-                <v-card-title class="headline">Donate</v-card-title>
+                <v-card-title class="headline">Transfer Funds</v-card-title>
                 <v-card-text>
                      <v-form
                         v-model="valid">
                             <v-text-field
                             v-model="donation.simbucks"
-                            label="Donation Amount"
+                            label="Transfer Amount"
                             :rules="[v => !!v || 'A value is required', v=> !isNaN(v) || 'Must be a number', v=> v > 0 || 'Must be greater than 0']"
                             required>
                             </v-text-field>
@@ -54,7 +54,7 @@
         <template v-slot:item.actions="{ item }" >
             <v-row>
                 <v-btn class="text" @click="donate(item)">
-                Donate
+                Transfer
                 <v-icon class="ml-3">
                     mdi-cash-refund
                 </v-icon>
@@ -91,7 +91,7 @@ export default {
     methods: {
         donate(item){
             this.donation.item = "Donation"
-            this.donation.buyer = this.$store.state.user.email
+            this.donation.buyer = this.$store.state.user.name
             this.donation.seller = item.name
             this.donation.date = moment().format('LLL')
             this.message = ""
@@ -101,14 +101,20 @@ export default {
         confirmDonation(){
             if(this.$store.state.user.simbucks >= this.donation.simbucks){
                 this.$store.dispatch('buyItem', this.donation)
-                this.message = "Your donation was successful!"
+                this.message = "Your transfer was successful!"
             }
             else{
-                this.cantDonate =  "You do not have enough simbucks to donate this amount"
+                this.cantDonate =  "You do not have enough simbucks to transfer this amount"
             }
         },
         async loadCandidates(){
             this.candidates = await listAll(seniors)
+            for(const [i, candidate] of this.candidates.entries()){ 
+                if(candidate.name == this.$store.state.user.name){
+                    console.log(this.candidates.splice(i, 1))
+                    break
+                }
+            }
         },
     },
     mounted(){

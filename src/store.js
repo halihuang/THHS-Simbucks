@@ -34,10 +34,10 @@ export default new Vuex.Store({
   getters: {
     getNav(state){
         return state.nav
+    },
+    getUser(state){
+        return state.user
     }
-    // getUser(state){
-    //     return state.user
-    // }
   },
   actions: {
       async logout({commit}){
@@ -71,6 +71,7 @@ export default new Vuex.Store({
             { text: 'Marketplace', icon: 'mdi-storefront', route: '/'},
             { text: 'Advertising', icon:'mdi-youtube-tv', route: 'advertising'},
             { text: 'Fundraise', icon:'mdi-currency-usd', route: 'fundraise'},
+            { text: 'Transfer Funds', icon:'mdi-bank-transfer', route: 'transfer'},
             { text: 'Manage Funds', icon:'mdi-cash-refund', route: 'campaign-funds'}
           ]
         }

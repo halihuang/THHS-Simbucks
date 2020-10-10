@@ -188,6 +188,7 @@ export default {
         deleteCandidateConfirm(){
             seniors.doc(this.deleteItem.name).delete()
             this.loadCandidates()
+            this.dialogDelete = false
         },
         editItem(item){
             this.candidate = Object.assign({},item)

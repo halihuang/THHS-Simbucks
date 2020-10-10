@@ -28,6 +28,18 @@ async function authenticated(user, collection){
   }
   return true
 }
+
+function updateLoop(data){
+  var interval = 5 //minutes
+  interval *= 1000 * 60
+  setTimeout(() => {
+    store.dispatch('fetchUserData', data)
+    updateLoop(data)
+  }, interval)
+}
+
+
+
 let app
 auth.onAuthStateChanged(async (user) => {
   if(user){
@@ -38,6 +50,7 @@ auth.onAuthStateChanged(async (user) => {
       if(router.history.current.path == "/login"){
         router.push("/")
       }
+      updateLoop(data)
     }
     else{
       store.dispatch('logout')

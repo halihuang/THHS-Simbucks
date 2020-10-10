@@ -57,6 +57,16 @@
                     label="Sort by"
                   ></v-select>
                   <v-spacer></v-spacer>
+                  <v-btn
+                  large
+                  depressed
+                  color="blue"
+                  @click="loadItems; snackbar = true">
+                    <v-icon>
+                      mdi-reload
+                    </v-icon>
+                  </v-btn>
+                  <v-spacer/>
                   <v-btn-toggle
                     v-model="sortDesc"
                     mandatory
@@ -118,7 +128,7 @@
                     <v-card-text>
                        <div class="font-weight-medium black--text"> Description:</div>{{item.description}}
                     </v-card-text>
-                    <v-card-actions class="pb-4">
+                    <v-card-actions class="pb-4" v-if="allowBuy">
                       <v-spacer/>
                       <v-btn @click="buyItem(item)"
                       class="primary mr-4">
@@ -193,6 +203,23 @@
           </v-data-iterator>
         </v-container>
       </template>
+
+
+      <v-snackbar
+      v-model="snackbar"
+    >
+      Refreshing Marketplace
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          color="red"
+          text
+          v-bind="attrs"
+          @click="snackbar = false"
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
     </v-container>
 </template>
 
@@ -222,7 +249,8 @@ export default {
         item: {},
         dialog: false,
         finishedPurchase: false,
-        enoughMoney: true
+        enoughMoney: true,
+        snackbar: false
     }
   },
   computed: {
@@ -232,6 +260,12 @@ export default {
       filteredKeys () {
         return this.keys.filter(key => key !== 'Name')
       },
+      allowBuy(){
+        if(localStorage.getItem("collection") == 'voters'){
+          return true
+        }
+        return false
+      }
     },
   methods: {
     emptyObj(obj){
@@ -258,6 +292,7 @@ export default {
       }
       this.finishedPurchase = false
       this.dialog = true
+      this.item = item
     },
     async confirmPurchase(){
       var purchase = {
@@ -274,10 +309,11 @@ export default {
       this.loadItems()
     }
   },
-  mounted(){
+  async mounted(){
     if(localStorage.getItem('collection') == "voters"){
-      if(this.emptyObj(this.$store.user)){
-        var user = auth.currentUser
+      var user = auth.currentUser
+      var doc = await voters.doc(user.uid).get()
+      if(!doc.exists){
         voters.doc(user.uid).set({email: user.email, simbucks: "50"})
       }
     }

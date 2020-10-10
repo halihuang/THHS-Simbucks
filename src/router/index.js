@@ -35,7 +35,8 @@ const routes = [
     name: 'History',
     component: () => import(/* webpackChunkName: "history" */ '../views/voters/History.vue'),
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      collection: "voters"
     }
   },
   {
@@ -43,7 +44,8 @@ const routes = [
     name: 'Donate',
     component: () => import(/* webpackChunkName: "history" */ '../views/voters/Donate.vue'),
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      collection: "voters"
     }
   },
   {
@@ -51,7 +53,8 @@ const routes = [
     name: 'Seniors',
     component: () => import(/* webpackChunkName: "admin" */ '../views/admin/seniors.vue'),
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      collection: "admins"
     }
   },
   {
@@ -59,7 +62,8 @@ const routes = [
     name: 'Voters',
     component: () => import(/* webpackChunkName: "admin" */ '../views/admin/voters.vue'),
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      collection: "admins"
     }
   },
   {
@@ -67,7 +71,8 @@ const routes = [
     name: 'Admin',
     component: () => import(/* webpackChunkName: "admin" */ '../views/admin/Admin.vue'),
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      collection: "admins"
     }
   },
   {
@@ -75,7 +80,8 @@ const routes = [
     name: 'Advertising',
     component: () => import(/* webpackChunkName: "admin" */ '../views/seniors/Advertising.vue'),
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      collection: "seniors"
     }
   },
   {
@@ -83,7 +89,8 @@ const routes = [
     name: 'Funds',
     component: () => import(/* webpackChunkName: "admin" */ '../views/seniors/Funds.vue'),
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      collection: "seniors"
     }
   },
   {
@@ -91,7 +98,17 @@ const routes = [
     name: 'Fundraise',
     component: () => import(/* webpackChunkName: "admin" */ '../views/seniors/Fundraise.vue'),
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      collection: "seniors"
+    }
+  },
+  {
+    path: '/transfer',
+    name: 'Transfer',
+    component: () => import(/* webpackChunkName: "admin" */ '../views/seniors/Transfer.vue'),
+    meta: {
+      requiresAuth: true,
+      collection: "seniors"
     }
   },
 ]
@@ -102,14 +119,21 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(x => x.meta.requiresAuth)
-
+  const collection = to.meta.collection
   if (requiresAuth && !auth.currentUser) {
     next('/login')
   } else {
     if(to.name != "Login"){
       store.dispatch('allowNav')
     }
-    next()
+    if(collection){
+      if(localStorage.getItem('collection') == collection){
+        next()
+      }
+    }
+    else{
+      next()
+    }
   }
 })
 

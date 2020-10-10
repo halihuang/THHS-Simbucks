@@ -48,7 +48,7 @@
       <v-toolbar-title>THHS Simbucks</v-toolbar-title>
 
       <v-spacer></v-spacer>
-      <v-btn class="primary" v-if="balance">
+      <v-btn class="primary" v-if="balance !== ''">
         Balance: ${{balance}}
       </v-btn>
     </v-app-bar>
@@ -75,7 +75,7 @@
         if( this.$store.state.user){
           return this.$store.state.user.simbucks
         }
-        return "" 
+        return ""
       },
       signInState(){
         if(this.$store.state.user.name){

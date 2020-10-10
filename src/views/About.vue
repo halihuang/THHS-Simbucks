@@ -7,5 +7,8 @@
       of THHS in exchange for virtual simbucks. Using these simbucks, candidates and interest groups will be able to buy ads, TV, and radio
       time. We hope that you will still be able to enjoy a staple of the Townsend Harris experience regardless of the quarantine. Stay strong!
     </p>
+    <p class="mx-12 px-12">
+      <b>Creator:</b>Hali Huang
+    </p>
   </v-container>
 </template>

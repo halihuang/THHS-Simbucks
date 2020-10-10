@@ -18,7 +18,10 @@
                         <li>TV show ads cost $400 per 15 seconds</li>
                         <li>Radioshow Ads cost $200 per 15 seconds</li>
                         <li>Ads can only exist in increments of 15 seconds</li>
-                        <li> Ex. You will pay $800 for a 23 second TV ad</li>
+                        <li>Ex. You will pay $800 for a 23 second TV ad</li>
+                        <li>This page exists for campaigns to keep track of their advertising purchases. After buying an advertisement here, please fill out the following Google Form to alert the advertising team about your requests, so they can coordinate accordingly.</li>
+                        <li><a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSfcfUZKklGg01OrGjM7VoueOhGyNwc3XKwIbFvCMxnDgXwAsQ/viewform">https://docs.google.com/forms/d/e/1FAIpQLSfcfUZKklGg01OrGjM7VoueOhGyNwc3XKwIbFvCMxnDgXwAsQ/viewform</a></li>
+                        <li>If your advertisement request is canceled due to scheduling issues, we will refund you the simbucks.</li>
                     </ul>
                     <v-form
                     v-model="valid">
@@ -45,43 +48,14 @@
                         required
                         >
                         </v-select>
-                        <v-dialog
-                            ref="dialog"
-                            v-model="modal"
-                            :return-value.sync="newAd.date"
-                            width="290px"
+                        <v-select
+                        v-model="newAd.date"
+                        :items="dates"
+                        :rules="[v => !!v || 'Date is required']"
+                        label="Date"
+                        required
                         >
-                            <template v-slot:activator="{ on, attrs }">
-                            <v-text-field
-                                v-model="newAd.date"
-                                label="Advertisement Date"
-                                prepend-icon="mdi-calendar"
-                                readonly
-                                v-bind="attrs"
-                                v-on="on"
-                            ></v-text-field>
-                            </template>
-                            <v-date-picker
-                            v-model="newAd.date"
-                            scrollable
-                            >
-                            <v-spacer></v-spacer>
-                            <v-btn
-                                text
-                                color="primary"
-                                @click="modal = false"
-                            >
-                                Cancel
-                            </v-btn>
-                            <v-btn
-                                text
-                                color="primary"
-                                @click="$refs.dialog.save(newAd.date)"
-                            >
-                                OK
-                            </v-btn>
-                            </v-date-picker>
-                        </v-dialog>
+                        </v-select>
                     </v-form>
                     <p v-if="adCost">
                         Your advertisement will cost <b>{{adCost}} Simbucks</b>
@@ -160,6 +134,12 @@ export default {
                 {text: "1 minute 30 seconds", value: 90},
                 {text: "1 minute 45 seconds", value: 105},
                 {text: "2 minutes", value: 120}
+            ],
+            dates: [
+                {text: "October 9th, 2020", value: "October 9, 2020"},
+                {text: "October 16th, 2020", value: "October 16, 2020"},
+                {text: "October 23rd, 2020", value: "October 23, 2020"},
+                {text: "October 30th, 2020", value: "October 30, 2020"},
             ],
             types: [
                 {text: "TV", value:"TV"},
