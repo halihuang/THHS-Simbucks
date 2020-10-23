@@ -227,7 +227,7 @@
 // @ is an alias to /src
 // import HelloWorld from '@/components/HelloWorld.vue'
 
-import {voters, market, auth, listAll} from '../firebase'
+import {voters, market, auth, listAll, getUserMeta} from '../firebase'
 import moment from 'moment'
 
 export default {
@@ -286,27 +286,37 @@ export default {
     updateItemsPerPage (number) {
       this.itemsPerPage = number
     },
-    buyItem(item) {
-      if(this.$store.state.user.simbucks < item.simbucks){
+    async buyItem(item) {
+      await this.$store.dispatch('fetchUserData', getUserMeta())
+      if(parseInt(this.$store.state.user.simbucks) < parseInt(item.simbucks)){
         this.enoughMoney = false
+      }
+      else{
+        this.enoughMoney = true
       }
       this.finishedPurchase = false
       this.dialog = true
       this.item = item
     },
     async confirmPurchase(){
-      var purchase = {
-        buyer: this.$store.state.user.email,
-        date: moment().format("LLL"),
-        item: this.item.name,
-        seller: this.item.seller,
-        id: this.item.id,
-        simbucks: this.item.simbucks
+      await this.$store.dispatch('fetchUserData', getUserMeta())
+      if(parseInt(this.$store.state.user.simbucks) < parseInt(this.item.simbucks)){
+        this.enoughMoney = false
       }
-      console.log(purchase)
-      await this.$store.dispatch('buyItem', purchase)
-      this.finishedPurchase = true
-      this.loadItems()
+      else{
+          var purchase = {
+          buyer: this.$store.state.user.email,
+          date: moment().format("LLL"),
+          item: this.item.name,
+          seller: this.item.seller,
+          id: this.item.id,
+          simbucks: this.item.simbucks
+        }
+        this.enoughMoney = true
+        this.finishedPurchase = true
+        await this.$store.dispatch('buyItem', purchase)
+        this.loadItems()
+      }
     }
   },
   async mounted(){

@@ -26,13 +26,8 @@
                             label="Donation Amount"
                             :rules="[v => !!v || 'A value is required', v=> !isNaN(v) || 'Must be a number', v=> v > 0 || 'Must be greater than 0']"
                             required>
-                            </v-text-field>
-                                                    
-                                                    <p>
-
-                            <p class="success--text">{{message}}</p>
+                            </v-text-field>                  
                             <p class="error--text">{{cantDonate}}</p>
-
                     </v-form>
                 </v-card-text>
                 <v-card-actions>
@@ -62,6 +57,21 @@
             </v-row>
         </template>
         </v-data-table>
+        <v-snackbar
+        v-model="snackbar"
+        >
+        Your donation was successful!
+        <template v-slot:action="{ attrs }">
+            <v-btn
+            color="red"
+            text
+            v-bind="attrs"
+            @click="snackbar = false"
+            >
+            Close
+            </v-btn>
+        </template>
+        </v-snackbar>
     </v-container>
 </template>
 
@@ -84,8 +94,8 @@ export default {
             ],
             search: '',
             candidates: [],
-            message: "",
-            cantDonate: ""
+            cantDonate: "",
+            snackbar: false
         }
     },
     methods: {
@@ -94,14 +104,14 @@ export default {
             this.donation.buyer = this.$store.state.user.email
             this.donation.seller = item.name
             this.donation.date = moment().format('LLL')
-            this.message = ""
             this.cantDonate = ""
             this.dialog = true
         },
         confirmDonation(){
             if(this.$store.state.user.simbucks >= this.donation.simbucks){
                 this.$store.dispatch('buyItem', this.donation)
-                this.message = "Your donation was successful!"
+                this.snackbar = true
+                this.dialog = false
             }
             else{
                 this.cantDonate =  "You do not have enough simbucks to donate this amount"

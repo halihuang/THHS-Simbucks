@@ -36,7 +36,7 @@
                         <v-btn @click="login('voters')" class="red white--text accent-4">
                             I am a Voter
                         </v-btn>
-                        <p class="mt-3">If you're a freshman, sophomore or junior, you're a voter in this election simulation.</p>
+                        <p class="mt-3">Every grade can sign in as a voter in this election simulation.</p>
                     </v-col>
                     <v-col>
                         <v-btn @click="login('seniors')" class="blue white--text accent-4">
