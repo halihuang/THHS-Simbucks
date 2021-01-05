@@ -17,10 +17,15 @@
                     <ul class="mb-5">
                         <li>TV show ads cost $400 per 15 seconds</li>
                         <li>Radioshow Ads cost $200 per 15 seconds</li>
-                        <li>Ads can only exist in increments of 15 seconds</li>
+                        <li>TV/Radio Ads can only exist in increments of 15 seconds</li>
                         <li>Ex. You will pay $800 for a 23 second TV ad</li>
-                        <li>This page exists for campaigns to keep track of their advertising purchases. After buying an advertisement here, please fill out the following Google Form to alert the advertising team about your requests, so they can coordinate accordingly.</li>
-                        <li><a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSfcfUZKklGg01OrGjM7VoueOhGyNwc3XKwIbFvCMxnDgXwAsQ/viewform">https://docs.google.com/forms/d/e/1FAIpQLSfcfUZKklGg01OrGjM7VoueOhGyNwc3XKwIbFvCMxnDgXwAsQ/viewform</a></li>
+                        <li>Newspaper ads cost 25 simbucks for a small ad, and 50 simbucks for a large ad</li>
+                        <li>This page exists for campaigns to keep track of their advertising purchases. After buying an Radio/TV advertisement here, please fill out the following Google Form to alert the TV/Radio advertising team about your requests, so they can coordinate accordingly.</li>
+                        <li><a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSfcfUZKklGg01OrGjM7VoueOhGyNwc3XKwIbFvCMxnDgXwAsQ/viewform">Click here for TV/Radio Google Form</a></li>
+                        <li>After buying a Liberal Newspaper Ad, please fill out the following google form to alert the Liberal Newspaper team of your request</li>
+                        <li><a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSdRuP1nCIugL6Ct7JC8wtK-KI6a8ofp2LPu_3-QJoP96oNk2g/viewform">Click here for Liberal Newspaper Google Form</a></li>
+                        <li>After buying a Conservative Newspaper Ad, please fill out the following google form to alert the Conservative Newspaper team of your request</li>
+                        <li><a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSdgRcZ80hAPwki3PnsY1YIK-3qNIRV36pjkHDZ6Sx2H0R9rVg/viewform?gxids=7757">Click here for Conservative Newspaper Google Form</a></li>
                         <li>If your advertisement request is canceled due to scheduling issues, we will refund you the simbucks.</li>
                     </ul>
                     <v-form
@@ -37,14 +42,25 @@
                         :items="types"
                         :rules="[v => !!v || 'Type is required']"
                         label="Type of Advertisement"
+                        @change="newAd.time = 0"
                         required
                         >
                         </v-select>
                         <v-select
                         v-model="newAd.time"
+                        v-if="newAd.type == 'TV' || newAd.type == 'Radio'"
                         :items="times"
                         :rules="[v => !!v || 'Time is required']"
                         label="Time"
+                        required
+                        >
+                        </v-select>
+                        <v-select
+                        v-model="newAd.time"
+                        v-if="newAd.type == 'Liberal Newspaper' || newAd.type == 'Conservative Newspaper'"
+                        :items="sizes"
+                        :rules="[v => !!v || 'Newspaper ad size is required']"
+                        label="Newspaper Ad Size"
                         required
                         >
                         </v-select>
@@ -90,7 +106,7 @@
                     Ad Type
                 </th>
                 <th class="text-left">
-                    Time
+                    Time/Size
                 </th>
                 <th class="text-left">
                     Simbucks
@@ -125,6 +141,10 @@ export default {
             modal: false,
             ads: [],
             newAd: {type: "", time: "", simbucks: 0, date: "", by: ""},
+            sizes: [
+                {text: "Large Newspaper Ad", value: 2},
+                {text: "Small Newspaper Ad", value: 1}
+            ],
             times: [
                 {text: "15 seconds", value: 15}, 
                 {text: "30 seconds", value: 30},
@@ -144,6 +164,8 @@ export default {
             types: [
                 {text: "TV", value:"TV"},
                 {text: "Radio", value:"Radio"},
+                {text: "Liberal Newspaper", value: "Liberal Newspaper"},
+                {text: "Conservative Newspaper", value: "Conservative Newspaper"}
             ],
         }
     },
@@ -194,11 +216,15 @@ export default {
         getCost(type, time){
             const tv = 400/15
             const radio = 200/15
+            const newspaper = 25
             if(type == "TV"){
                 return tv * time
             }
             else if(type == "Radio"){
                 return radio * time
+            }
+            else if(type == "Liberal Newspaper" || type == "Conservative Newspaper"){
+                return newspaper * time
             }
         },
         clearForm(){
